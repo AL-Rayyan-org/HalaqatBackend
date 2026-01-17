@@ -1,0 +1,6 @@
+@HalaqatBackend_HostAddress = http://localhost:5261
+
+GET {{HalaqatBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
