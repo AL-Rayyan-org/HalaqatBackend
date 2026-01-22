@@ -19,6 +19,7 @@ Halaqat Backend is a management system for tracking and evaluating students' pro
 - Contains classes that are **directly mapped to database tables**
 - Each model represents a database entity with matching properties
 - Example: `User`, `Teacher`, `Student`, `RecitationLog`, `Group`, etc.
+- Notice that the tables columns in db ar in **snake_case**, while the model properties are in **PascalCase** to follow C# conventions. ensure proper mapping.
 
 #### 2. **DTOs Folder**
 - Contains Data Transfer Objects for **communication with the frontend**

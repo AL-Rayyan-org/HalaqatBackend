@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace HalaqatBackend.Models
+﻿namespace HalaqatBackend.Models
 {
-    public class User : IdentityUser<int>
+    public class User
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public override string? Email {  get; set; }
-        public override string? PasswordHash { get; set; }
-        public override string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+        public string? PasswordHash { get; set; }
+        public string? Phone { get; set; }
         public bool IsActive { get; set; }
         public Roles Role { get; set; }
         public DateTime CreatedAt { get; set; }

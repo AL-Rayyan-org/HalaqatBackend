@@ -1,6 +1,6 @@
 -- 1. Users Table
 CREATE TABLE users (
-    id UUID PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -13,14 +13,14 @@ CREATE TABLE users (
 
 -- 2. Teachers Table
 CREATE TABLE teachers (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
     CONSTRAINT fk_teacher_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- 3. Halaqat Table
 CREATE TABLE groups (
-    id UUID PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     recitation_days VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -28,18 +28,18 @@ CREATE TABLE groups (
 
 -- 4. Teacher relations with Halaqat
 CREATE TABLE group_teachers (
-    id UUID PRIMARY KEY,
-    group_id UUID NOT NULL,
-    teacher_id UUID NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    group_id VARCHAR(50) NOT NULL,
+    teacher_id VARCHAR(50) NOT NULL,
     CONSTRAINT fk_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
     CONSTRAINT fk_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
 -- 5. Students Table
 CREATE TABLE students (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
-    group_id UUID,
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    group_id VARCHAR(50),
     info TEXT,
     CONSTRAINT fk_student_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_student_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL
@@ -47,10 +47,10 @@ CREATE TABLE students (
 
 -- 6. Recitation Logs
 CREATE TABLE recitation_logs (
-    id UUID PRIMARY KEY,
-    student_id UUID NOT NULL,
-    teacher_id UUID NOT NULL,
-    group_id UUID NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    student_id VARCHAR(50) NOT NULL,
+    teacher_id VARCHAR(50) NOT NULL,
+    group_id VARCHAR(50) NOT NULL,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     completed BOOLEAN DEFAULT FALSE,
     hifz_content VARCHAR(255),
@@ -75,9 +75,9 @@ CREATE TABLE recitation_logs (
 
 -- 7. Attendance Table
 CREATE TABLE attendance (
-    id UUID PRIMARY KEY,
-    student_id UUID NOT NULL,
-    group_id UUID NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    student_id VARCHAR(50) NOT NULL,
+    group_id VARCHAR(50) NOT NULL,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     status VARCHAR(30),
     CONSTRAINT fk_attendance_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
@@ -86,8 +86,8 @@ CREATE TABLE attendance (
 
 -- 8. Audit Logs
 CREATE TABLE audit_logs (
-    id UUID PRIMARY KEY,
-    user_id UUID,
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50),
     date DATE DEFAULT CURRENT_DATE,
     action VARCHAR(255),
     entity_name VARCHAR(100),
@@ -96,9 +96,9 @@ CREATE TABLE audit_logs (
 
 -- 9. Refresh Tokens Table
 CREATE TABLE refresh_tokens (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
-    token_hash VARCHAR(255) NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    token TEXT NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     revoked_at TIMESTAMP WITH TIME ZONE,
