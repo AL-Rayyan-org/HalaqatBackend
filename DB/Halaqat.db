@@ -1,0 +1,106 @@
+-- 1. Users Table
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    role VARCHAR(20) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Teachers Table
+CREATE TABLE teachers (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    CONSTRAINT fk_teacher_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 3. Halaqat Table
+CREATE TABLE groups (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    recitation_days VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. Teacher relations with Halaqat
+CREATE TABLE group_teachers (
+    id UUID PRIMARY KEY,
+    group_id UUID NOT NULL,
+    teacher_id UUID NOT NULL,
+    CONSTRAINT fk_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    CONSTRAINT fk_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+);
+
+-- 5. Students Table
+CREATE TABLE students (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    group_id UUID,
+    info TEXT,
+    CONSTRAINT fk_student_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_student_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL
+);
+
+-- 6. Recitation Logs
+CREATE TABLE recitation_logs (
+    id UUID PRIMARY KEY,
+    student_id UUID NOT NULL,
+    teacher_id UUID NOT NULL,
+    group_id UUID NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    completed BOOLEAN DEFAULT FALSE,
+    hifz_content VARCHAR(255),
+    hifz_page_count FLOAT DEFAULT 0,
+    hifz_reminders INTEGER DEFAULT 0,
+    hifz_mistakes INTEGER DEFAULT 0,
+    hifz_minor_mistakes INTEGER DEFAULT 0,
+    hifz_final_score INTEGER,
+    rev_content VARCHAR(255),
+    rev_page_count FLOAT DEFAULT 0,
+    rev_reminders INTEGER DEFAULT 0,
+    rev_mistakes INTEGER DEFAULT 0,
+    rev_minor_mistakes INTEGER DEFAULT 0,
+    rev_final_score INTEGER,
+    extra_point INTEGER DEFAULT 0,
+    notes VARCHAR(500),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_log_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    CONSTRAINT fk_log_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+    CONSTRAINT fk_log_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+);
+
+-- 7. Attendance Table
+CREATE TABLE attendance (
+    id UUID PRIMARY KEY,
+    student_id UUID NOT NULL,
+    group_id UUID NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    status VARCHAR(30),
+    CONSTRAINT fk_attendance_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    CONSTRAINT fk_attendance_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+);
+
+-- 8. Audit Logs
+CREATE TABLE audit_logs (
+    id UUID PRIMARY KEY,
+    user_id UUID,
+    date DATE DEFAULT CURRENT_DATE,
+    action VARCHAR(255),
+    entity_name VARCHAR(100),
+    CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- 9. Refresh Tokens Table
+CREATE TABLE refresh_tokens (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    revoked_at TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

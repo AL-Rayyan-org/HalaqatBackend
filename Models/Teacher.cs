@@ -1,10 +1,8 @@
-﻿namespace Al_Rayyan.Models
+﻿namespace HalaqatBackend.Models
 {
     public class Teacher
     {
-        public int ID { get; set; }
-        public int UserId { get; set; }
-        public bool Status { get; set; }
-        Teacher() { }
+        public string Id { get; set; }
+        public string UserId { get; set; }
     }
 }

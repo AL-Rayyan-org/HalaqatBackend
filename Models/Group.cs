@@ -1,12 +1,10 @@
-﻿namespace Al_Rayyan.Models
+﻿namespace HalaqatBackend.Models
 {
     public class Group
     {
-        public int ID { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public Array Deadlines { get; set; }
-        public string Info { get; set; }
-        public DateOnly JoinedAt { get; set; }
-        Group() { }
+        public string RecitationDays { get; set; } // e.g., "Monday,Wednesday"
+        public DateTime CreatedAt { get; set; }
     }
 }

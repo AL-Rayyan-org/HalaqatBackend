@@ -25,7 +25,6 @@ Properties/launchSettings.json
 
 ## [Database & Logs]
 # استبعاد ملفات قواعد البيانات واللوغات
-*.db
 *.sqlite
 *.log
 

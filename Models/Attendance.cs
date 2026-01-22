@@ -1,12 +1,12 @@
-﻿namespace Al_Rayyan.Models
+﻿namespace HalaqatBackend.Models
 {
     public class Attendance
     {
-        public int ID { get; set; }
-        public int StudentId { get; set; }
-        public int GroupId { get; set; }
-        public DateOnly Date { get; set; }
+        public string Id { get; set; }
+        public string StudentId { get; set; }
+        public string GroupId { get; set; }
+
+        public DateTime Date { get; set; }
         public string Status { get; set; }
-        Attendance() { }
     }
 }
