@@ -1,4 +1,4 @@
--- 1. Users Table
+-- 1. Users Table (The source of truth for all people)
 CREATE TABLE users (
     id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(100),
@@ -6,19 +6,12 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
-    role VARCHAR(20) NOT NULL,
+    role VARCHAR(20) NOT NULL, -- e.g., 'admin', 'teacher', 'student'
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Teachers Table
-CREATE TABLE teachers (
-    id VARCHAR(50) PRIMARY KEY,
-    user_id VARCHAR(50) NOT NULL,
-    CONSTRAINT fk_teacher_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- 3. Halaqat Table
+-- 2. Halaqat Table
 CREATE TABLE groups (
     id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -26,30 +19,31 @@ CREATE TABLE groups (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. Teacher relations with Halaqat
+-- 3. Teacher relations with Halaqat (Linked to users)
 CREATE TABLE group_teachers (
     id VARCHAR(50) PRIMARY KEY,
     group_id VARCHAR(50) NOT NULL,
-    teacher_id VARCHAR(50) NOT NULL,
+    teacher_id VARCHAR(50) NOT NULL, -- References users.id
     CONSTRAINT fk_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
-    CONSTRAINT fk_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+    CONSTRAINT fk_teacher_user FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 5. Students Table
+-- 4. Students Metadata Table
+-- (Keep this only if you need specific fields like 'info' that don't belong in 'users')
 CREATE TABLE students (
-    id VARCHAR(50) PRIMARY KEY,
-    user_id VARCHAR(50) NOT NULL,
+    id VARCHAR(50) PRIMARY KEY, -- Usually same as user_id for 1:1 relationship
+    user_id VARCHAR(50) NOT NULL UNIQUE,
     group_id VARCHAR(50),
     info TEXT,
     CONSTRAINT fk_student_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_student_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE SET NULL
 );
 
--- 6. Recitation Logs
+-- 5. Recitation Logs (Linked to users for teacher tracking)
 CREATE TABLE recitation_logs (
     id VARCHAR(50) PRIMARY KEY,
-    student_id VARCHAR(50) NOT NULL,
-    teacher_id VARCHAR(50) NOT NULL,
+    student_id VARCHAR(50) NOT NULL, -- References students.id
+    teacher_id VARCHAR(50) NOT NULL, -- References users.id
     group_id VARCHAR(50) NOT NULL,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     completed BOOLEAN DEFAULT FALSE,
@@ -69,11 +63,11 @@ CREATE TABLE recitation_logs (
     notes VARCHAR(500),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_log_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    CONSTRAINT fk_log_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+    CONSTRAINT fk_log_teacher_user FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_log_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
 
--- 7. Attendance Table
+-- 6. Attendance Table
 CREATE TABLE attendance (
     id VARCHAR(50) PRIMARY KEY,
     student_id VARCHAR(50) NOT NULL,
@@ -84,7 +78,7 @@ CREATE TABLE attendance (
     CONSTRAINT fk_attendance_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
 
--- 8. Audit Logs
+-- 7. Audit Logs
 CREATE TABLE audit_logs (
     id VARCHAR(50) PRIMARY KEY,
     user_id VARCHAR(50),
@@ -94,7 +88,7 @@ CREATE TABLE audit_logs (
     CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 9. Refresh Tokens Table
+-- 8. Refresh Tokens Table
 CREATE TABLE refresh_tokens (
     id VARCHAR(50) PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
@@ -102,5 +96,5 @@ CREATE TABLE refresh_tokens (
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     revoked_at TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_token_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

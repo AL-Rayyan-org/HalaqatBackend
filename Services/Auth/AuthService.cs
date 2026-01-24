@@ -4,6 +4,7 @@ using HalaqatBackend.Models;
 using HalaqatBackend.Repositories.RefreshTokens;
 using HalaqatBackend.Repositories.Users;
 using HalaqatBackend.Services.Jwt;
+using HalaqatBackend.Utils;
 using System.Security.Claims;
 
 namespace HalaqatBackend.Services.Auth
@@ -33,6 +34,8 @@ namespace HalaqatBackend.Services.Auth
             {
                 throw new InvalidOperationException("Email already exists");
             }
+
+            PasswordValidator.ValidateOrThrow(request.Password);
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -158,27 +161,6 @@ namespace HalaqatBackend.Services.Auth
                 Role = user.Role,
                 AccessToken = newAccessToken,
             };
-        }
-
-        public async Task<bool> ChangePasswordAsync(string userId, ChangePasswordRequestDto request)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-            {
-                throw new InvalidOperationException("User not found");
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash))
-            {
-                throw new UnauthorizedAccessException("Current password is incorrect");
-            }
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            await _userRepository.UpdateAsync(user);
-
-            await _refreshTokenRepository.RevokeAllUserTokensAsync(userId);
-
-            return true;
         }
     }
 }

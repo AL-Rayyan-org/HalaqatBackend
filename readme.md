@@ -243,7 +243,7 @@ Group Performance % = (Average Student Points / Maximum Possible Points) × 100
 - Prefix interfaces with "I" (e.g., `IStudentService`)
 - Use descriptive names that reflect purpose
 
-### 7. Http Response
+### 8. Http Response
 always return the response opject that in: (`DTOs/ApiResponse`) for all endpoints.
 
 ## Example Workflow
@@ -274,3 +274,7 @@ always return the response opject that in: (`DTOs/ApiResponse`) for all endpoint
    builder.Services.AddScoped<IRecitationLogRepository, RecitationLogRepository>();
    builder.Services.AddScoped<IRecitationLogService, RecitationLogService>();
    ```
+
+## 9 Utils
+**check the utilse every time when add new feature or module and see if there is a pretyped helper methods that can be used in new feature or module.**
+- current utils: 1- password validator, 2- SearchHelper,

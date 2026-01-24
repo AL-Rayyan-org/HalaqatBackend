@@ -4,9 +4,12 @@ using HalaqatBackend.Middleware;
 using HalaqatBackend.Repositories.AuditLogs;
 using HalaqatBackend.Repositories.RefreshTokens;
 using HalaqatBackend.Repositories.Users;
+using HalaqatBackend.Repositories.Profile;
 using HalaqatBackend.Services.AuditLogs;
+using HalaqatBackend.Services.Profile;
 using HalaqatBackend.Services.Auth;
 using HalaqatBackend.Services.Jwt;
+using HalaqatBackend.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -49,14 +52,36 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 
 // Register Services
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Add Controllers
 builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors.Select(er => er.ErrorMessage))
+                .ToList();
+
+            var errorMessage = string.Join("; ", errors);
+
+            var response = HalaqatBackend.DTOs.ApiResponse<object>.ErrorResponse(
+                errorMessage,
+                400
+            );
+
+            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(response);
+        };
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());

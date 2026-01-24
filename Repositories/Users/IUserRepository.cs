@@ -10,5 +10,10 @@ namespace HalaqatBackend.Repositories.Users
         Task<User> UpdateAsync(User user);
         Task<bool> DeleteAsync(string id);
         Task<bool> EmailExistsAsync(string email);
+        Task<IEnumerable<User>> GetAllActiveUsersAsync(string? searchText, Roles? role);
+        Task<bool> UpdateUserRoleAsync(string userId, Roles role);
+        Task<bool> DeactivateUserAsync(string userId);
+        Task<bool> RemoveFromGroupTeachersAsync(string userId);
+        Task<bool> UpdateUserPasswordAsync(string userId, string passwordHash);
     }
 }

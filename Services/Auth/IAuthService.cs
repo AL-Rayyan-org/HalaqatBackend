@@ -7,6 +7,5 @@ namespace HalaqatBackend.Services.Auth
         Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request);
         Task<AuthResponseDto> LoginAsync(LoginRequestDto request);
         Task<AuthResponseDto> RefreshTokenAsync(string refreshToken);
-        Task<bool> ChangePasswordAsync(string userId, ChangePasswordRequestDto request);
     }
 }

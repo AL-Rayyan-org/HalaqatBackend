@@ -17,7 +17,7 @@ namespace HalaqatBackend.DTOs.Auth
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 100 characters")]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; set; } = string.Empty;
 
         [Phone(ErrorMessage = "Invalid phone number format")]
