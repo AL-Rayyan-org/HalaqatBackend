@@ -16,6 +16,8 @@ CREATE TABLE groups (
     id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     recitation_days VARCHAR(255),
+     is_default BOOLEAN DEFAULT false,
+    members_limit INTEGER DEFAULT 10,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
