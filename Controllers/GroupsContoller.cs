@@ -53,7 +53,7 @@ namespace HalaqatBackend.Controllers
                 };
 
                 var createdGroup = await _groupRepository.CreateAsync(group);
-                return StatusCode(201, ApiResponse<dynamic>.SuccessResponse(createdGroup, "Group created successfully"));
+                return StatusCode(200, ApiResponse<dynamic>.SuccessResponse(createdGroup, "Group created successfully"));
             }
             catch (ArgumentException ex)
             {

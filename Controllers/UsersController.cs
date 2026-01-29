@@ -43,7 +43,7 @@ namespace HalaqatBackend.Controllers
             try
             {
                 var user = await _userService.CreateUserAsync(request);
-                return Ok(ApiResponse<UserResponseDto>.SuccessResponse(user, "User created successfully", 201));
+                return Ok(ApiResponse<UserResponseDto>.SuccessResponse(user, "User created successfully", 200));
             }
             catch (ArgumentException ex)
             {

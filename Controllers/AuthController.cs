@@ -31,7 +31,7 @@ namespace HalaqatBackend.Controllers
 
         //        var result = await _authService.RegisterAsync(request);
         //        return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(
-        //            result, "Registration successful", 201));
+        //            result, "Registration successful", 200));
         //    }
         //    catch (InvalidOperationException ex)
         //    {
