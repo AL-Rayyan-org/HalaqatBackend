@@ -40,6 +40,7 @@ namespace HalaqatBackend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequestDto request)
         {
             try
@@ -49,6 +50,8 @@ namespace HalaqatBackend.Controllers
                     Id = Guid.NewGuid().ToString(),
                     Name = request.Name,
                     RecitationDays = request.RecitationDays,
+                    MembersLimit = request.MembersLimit,
+                    IsDefault = false,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -66,6 +69,7 @@ namespace HalaqatBackend.Controllers
         }
 
         [HttpPatch("{groupId}")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> UpdateGroup(string groupId, [FromBody] UpdateGroupRequestDto request)
         {
             try
@@ -78,6 +82,11 @@ namespace HalaqatBackend.Controllers
 
                 group.Name = request.Name ?? group.Name;
                 group.RecitationDays = request.RecitationDays ?? group.RecitationDays;
+                
+                if (request.MembersLimit.HasValue)
+                {
+                    group.MembersLimit = request.MembersLimit.Value;
+                }
 
                 var updatedGroup = await _groupRepository.UpdateAsync(group);
                 return Ok(ApiResponse<dynamic>.SuccessResponse(updatedGroup, "Group updated successfully"));
@@ -100,6 +109,27 @@ namespace HalaqatBackend.Controllers
             {
                 var (success, message) = await _groupService.DeleteAsync(groupId);
                 
+                if (!success)
+                {
+                    return BadRequest(ApiResponse<object>.ErrorResponse(message, 400));
+                }
+
+                return Ok(ApiResponse<object>.SuccessResponse(null, message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse(ex.Message, 500));
+            }
+        }
+
+        [HttpPost("set-default")]
+        [Authorize(Roles = "Owner,Admin")]
+        public async Task<IActionResult> SetDefaultGroup([FromBody] SetDefaultGroupRequestDto request)
+        {
+            try
+            {
+                var (success, message) = await _groupService.SetDefaultGroupAsync(request.GroupId);
+
                 if (!success)
                 {
                     return BadRequest(ApiResponse<object>.ErrorResponse(message, 400));

@@ -10,6 +10,7 @@ namespace HalaqatBackend.DTOs.Groups{
         
         public string RecitationDays {get; set;}=string.Empty;
 
-        
+        [Range(1, int.MaxValue, ErrorMessage = "Members limit must be greater than 0")]
+        public int MembersLimit { get; set; } = 10;
     }
 }

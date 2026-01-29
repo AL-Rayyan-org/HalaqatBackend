@@ -10,6 +10,9 @@ namespace HalaqatBackend.Repositories.Groups
         Task<Group> UpdateAsync(Group group);
         Task<bool> DeleteAsync(string id);
         Task<bool> HasUsersAsync(string groupId);
+        Task<Group?> GetDefaultGroupAsync();
+        Task<bool> SetDefaultGroupAsync(string groupId);
+        Task<bool> MigrateDeletedGroupDataAsync(string sourceGroupId, string defaultGroupId);
     }
 
 }
