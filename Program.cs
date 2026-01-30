@@ -6,17 +6,22 @@ using HalaqatBackend.Repositories.RefreshTokens;
 using HalaqatBackend.Repositories.Users;
 using HalaqatBackend.Repositories.Profile;
 using HalaqatBackend.Repositories.Groups;
+using HalaqatBackend.Repositories.Students;
 using HalaqatBackend.Services.AuditLogs;
 using HalaqatBackend.Services.Profile;
 using HalaqatBackend.Services.Auth;
 using HalaqatBackend.Services.Jwt;
 using HalaqatBackend.Services.Users;
 using HalaqatBackend.Services.Groups;
+using HalaqatBackend.Services.Students;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure the app to listen on specific URLs (HTTP and HTTPS)
+builder.WebHost.UseUrls("http://localhost:5261");
 
 // Configure Dapper to automatically map snake_case columns to PascalCase properties
 DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -55,6 +60,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 // Register Services
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -62,6 +69,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 // Add Controllers
 builder.Services.AddControllers()
@@ -94,9 +103,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                  "http://localhost:3000",
+                  "http://localhost:3001",
+                  "http://localhost:3002",
+                  "http://localhost:3003",
+                  "http://localhost:3004"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -111,17 +127,16 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
+// CORS must be before Authentication/Authorization
 app.UseCors("AllowAll");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Add Audit Log Middleware (after authentication so we can access user claims)
 app.UseMiddleware<AuditLogMiddleware>();
-
-app.MapControllers();
 
 // Map controllers with v1 route prefix
 app.MapGroup("v1").MapControllers();

@@ -31,8 +31,8 @@ namespace HalaqatBackend.Repositories.Users
         public async Task<User> CreateAsync(User user)
         {
             using var connection = _context.CreateConnection();
-            var sql = @"INSERT INTO users (id, first_name, last_name, email, password_hash, phone, is_active, role, created_at)
-                       VALUES (@Id, @FirstName, @LastName, @Email, @PasswordHash, @Phone, @IsActive, @RoleString, @CreatedAt)
+            var sql = @"INSERT INTO users (id, first_name, last_name, email, password_hash, phone, is_active, role, gender, created_at)
+                       VALUES (@Id, @FirstName, @LastName, @Email, @PasswordHash, @Phone, @IsActive, @RoleString, @GenderString, @CreatedAt)
                        RETURNING *";
             
             var parameters = new
@@ -45,6 +45,7 @@ namespace HalaqatBackend.Repositories.Users
                 user.Phone,
                 user.IsActive,
                 RoleString = user.Role.ToString(),
+                GenderString = user.Gender.ToString(),
                 user.CreatedAt
             };
             
@@ -62,7 +63,8 @@ namespace HalaqatBackend.Repositories.Users
                            password_hash = @PasswordHash, 
                            phone = @Phone, 
                            is_active = @IsActive, 
-                           role = @Role
+                           role = @Role,
+                           gender = @Gender
                        WHERE id = @Id
                        RETURNING *";
             

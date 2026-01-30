@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using HalaqatBackend.Enums;
 
 namespace HalaqatBackend.DTOs.Auth
 {
@@ -26,5 +27,9 @@ namespace HalaqatBackend.DTOs.Auth
         [Required(ErrorMessage = "Role is required")]
         [Range(0, 3, ErrorMessage = "Invalid role. Must be Owner(0), Admin(1), Teacher(2), or Student(3)")]
         public Roles Role { get; set; }
+
+        [Required(ErrorMessage = "Gender is required")]
+        [Range(0, 1, ErrorMessage = "Invalid gender. Must be Male or Female")]
+        public Gender Gender { get; set; }
     }
 }

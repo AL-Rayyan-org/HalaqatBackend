@@ -1,5 +1,6 @@
 using BCrypt.Net;
 using HalaqatBackend.DTOs.Users;
+using HalaqatBackend.Enums;
 using HalaqatBackend.Models;
 using HalaqatBackend.Repositories.Users;
 using HalaqatBackend.Utils;
@@ -40,6 +41,7 @@ namespace HalaqatBackend.Services.Users
                 LastName = user.LastName,
                 Email = user.Email ?? string.Empty,
                 Role = user.Role.ToString(),
+                Gender = user.Gender.ToString(),
                 JoinedOn = user.CreatedAt
             });
         }
@@ -52,6 +54,12 @@ namespace HalaqatBackend.Services.Users
                 throw new ArgumentException("Role must be either 'Admin' or 'Teacher'");
             }
 
+            var normalizedGender = request.Gender.Trim().ToLower();
+            if (normalizedGender != "male" && normalizedGender != "female")
+            {
+                throw new ArgumentException("Gender must be either 'Male' or 'Female'");
+            }
+
             PasswordValidator.ValidateOrThrow(request.Password);
 
             if (await _userRepository.EmailExistsAsync(request.Email))
@@ -60,6 +68,7 @@ namespace HalaqatBackend.Services.Users
             }
 
             var roleEnum = normalizedRole == "admin" ? Roles.Admin : Roles.Teacher;
+            var genderEnum = normalizedGender == "male" ? Gender.Male : Gender.Female;
 
             var user = new User
             {
@@ -70,6 +79,7 @@ namespace HalaqatBackend.Services.Users
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Phone = request.Phone,
                 Role = roleEnum,
+                Gender = genderEnum,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -83,6 +93,7 @@ namespace HalaqatBackend.Services.Users
                 LastName = createdUser.LastName,
                 Email = createdUser.Email ?? string.Empty,
                 Role = createdUser.Role.ToString(),
+                Gender = createdUser.Gender.ToString(),
                 JoinedOn = createdUser.CreatedAt
             };
         }
@@ -139,6 +150,7 @@ namespace HalaqatBackend.Services.Users
                 LastName = updatedUser.LastName,
                 Email = updatedUser.Email ?? string.Empty,
                 Role = updatedUser.Role.ToString(),
+                Gender = updatedUser.Gender.ToString(),
                 JoinedOn = updatedUser.CreatedAt
             };
         }

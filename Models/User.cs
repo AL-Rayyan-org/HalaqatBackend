@@ -1,4 +1,6 @@
-﻿namespace HalaqatBackend.Models
+﻿using HalaqatBackend.Enums;
+
+namespace HalaqatBackend.Models
 {
     public class User
     {
@@ -10,6 +12,7 @@
         public string? Phone { get; set; }
         public bool IsActive { get; set; }
         public Roles Role { get; set; }
+        public Gender Gender { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

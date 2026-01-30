@@ -48,6 +48,7 @@ namespace HalaqatBackend.Services.Auth
                 PasswordHash = passwordHash,
                 Phone = request.PhoneNumber,
                 Role = request.Role,
+                Gender = request.Gender,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -62,6 +63,7 @@ namespace HalaqatBackend.Services.Auth
                 LastName = user.LastName,
                 PhoneNumber = user.Phone,
                 Role = user.Role,
+                Gender = user.Gender,
             };
         }
 
@@ -106,6 +108,7 @@ namespace HalaqatBackend.Services.Auth
                 LastName = user.LastName,
                 PhoneNumber = user.Phone,
                 Role = user.Role,
+                Gender = user.Gender,
                 AccessToken = accessToken
             };
         }
@@ -159,6 +162,7 @@ namespace HalaqatBackend.Services.Auth
                 LastName = user.LastName,
                 PhoneNumber = user.Phone,
                 Role = user.Role,
+                Gender = user.Gender,
                 AccessToken = newAccessToken,
             };
         }
