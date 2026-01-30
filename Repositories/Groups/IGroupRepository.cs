@@ -2,7 +2,7 @@ using HalaqatBackend.Models;
 
 namespace HalaqatBackend.Repositories.Groups
 {
-        public interface IGroupRepository
+    public interface IGroupRepository
     {
         Task<Group?> GetAsync();
         Task<Group?> GetByIdAsync(string id);
@@ -10,6 +10,8 @@ namespace HalaqatBackend.Repositories.Groups
         Task<Group> UpdateAsync(Group group);
         Task<bool> DeleteAsync(string id);
         Task<bool> HasUsersAsync(string groupId);
+        Task<Group?> GetDefaultGroupAsync();
+        Task<IEnumerable<string>> GetTeacherGroupIdsAsync(string teacherId);
+        Task<bool> IsTeacherInGroupAsync(string teacherId, string groupId);
     }
-
 }

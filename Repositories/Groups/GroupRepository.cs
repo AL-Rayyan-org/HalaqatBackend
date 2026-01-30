@@ -74,5 +74,26 @@ namespace HalaqatBackend.Repositories.Groups
             return affectedRows>0;
         }
 
+        public async Task<Group?> GetDefaultGroupAsync()
+        {
+            using var connection = _context.CreateConnection();
+            var sql = "SELECT * FROM groups WHERE LOWER(name) = 'default' LIMIT 1";
+            return await connection.QueryFirstOrDefaultAsync<Group>(sql);
+        }
+
+        public async Task<IEnumerable<string>> GetTeacherGroupIdsAsync(string teacherId)
+        {
+            using var connection = _context.CreateConnection();
+            var sql = "SELECT group_id FROM group_teachers WHERE teacher_id = @TeacherId";
+            return await connection.QueryAsync<string>(sql, new { TeacherId = teacherId });
+        }
+
+        public async Task<bool> IsTeacherInGroupAsync(string teacherId, string groupId)
+        {
+            using var connection = _context.CreateConnection();
+            var sql = "SELECT COUNT(1) FROM group_teachers WHERE teacher_id = @TeacherId AND group_id = @GroupId";
+            var count = await connection.ExecuteScalarAsync<int>(sql, new { TeacherId = teacherId, GroupId = groupId });
+            return count > 0;
+        }
     }
 }

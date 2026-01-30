@@ -6,12 +6,14 @@ using HalaqatBackend.Repositories.RefreshTokens;
 using HalaqatBackend.Repositories.Users;
 using HalaqatBackend.Repositories.Profile;
 using HalaqatBackend.Repositories.Groups;
+using HalaqatBackend.Repositories.Students;
 using HalaqatBackend.Services.AuditLogs;
 using HalaqatBackend.Services.Profile;
 using HalaqatBackend.Services.Auth;
 using HalaqatBackend.Services.Jwt;
 using HalaqatBackend.Services.Users;
 using HalaqatBackend.Services.Groups;
+using HalaqatBackend.Services.Students;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -58,6 +60,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 // Register Services
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -65,6 +69,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 // Add Controllers
 builder.Services.AddControllers()
