@@ -18,6 +18,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure the app to listen on specific URLs (HTTP and HTTPS)
+builder.WebHost.UseUrls("http://localhost:5261");
+
 // Configure Dapper to automatically map snake_case columns to PascalCase properties
 DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -94,9 +97,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                  "http://localhost:3000",
+                  "http://localhost:3001",
+                  "http://localhost:3002",
+                  "http://localhost:3003",
+                  "http://localhost:3004"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -111,17 +121,16 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
+// CORS must be before Authentication/Authorization
 app.UseCors("AllowAll");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Add Audit Log Middleware (after authentication so we can access user claims)
 app.UseMiddleware<AuditLogMiddleware>();
-
-app.MapControllers();
 
 // Map controllers with v1 route prefix
 app.MapGroup("v1").MapControllers();
