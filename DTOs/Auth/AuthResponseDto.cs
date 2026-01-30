@@ -1,3 +1,5 @@
+using HalaqatBackend.Enums;
+
 namespace HalaqatBackend.DTOs.Auth
 {
     public class AuthResponseDto
@@ -8,6 +10,7 @@ namespace HalaqatBackend.DTOs.Auth
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public Roles Role { get; set; }
+        public Gender Gender { get; set; }
         public string AccessToken { get; set; } = string.Empty;
     }
 }

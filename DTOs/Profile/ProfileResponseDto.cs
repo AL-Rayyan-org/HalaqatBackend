@@ -1,3 +1,5 @@
+using HalaqatBackend.Enums;
+
 namespace HalaqatBackend.DTOs.Profile
 {
     public class ProfileResponseDto
@@ -8,5 +10,6 @@ namespace HalaqatBackend.DTOs.Profile
         public string LastName { get; set; } = string.Empty;
         public string? Phone { get; set; }
         public Roles Role { get; set; }
+        public Gender Gender { get; set; }
     }
 }

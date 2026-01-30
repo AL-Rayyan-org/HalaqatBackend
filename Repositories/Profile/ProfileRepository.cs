@@ -1,5 +1,6 @@
 using Dapper;
 using HalaqatBackend.Data;
+using HalaqatBackend.Enums;
 using HalaqatBackend.Models;
 
 namespace HalaqatBackend.Repositories.Profile
@@ -20,23 +21,51 @@ namespace HalaqatBackend.Repositories.Profile
             return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = userId });
         }
 
-        public async Task<User> UpdateUserProfileAsync(string userId, string firstName, string lastName, string? phone)
+        public async Task<User> UpdateUserProfileAsync(string userId, string firstName, string lastName, string? phone, Gender? gender = null)
         {
             using var connection = _context.CreateConnection();
-            var sql = @"UPDATE users 
+            
+            string sql;
+            object parameters;
+            
+            if (gender.HasValue)
+            {
+                sql = @"UPDATE users 
+                       SET first_name = @FirstName, 
+                           last_name = @LastName, 
+                           phone = @Phone,
+                           gender = @Gender
+                       WHERE id = @UserId
+                       RETURNING *";
+                
+                parameters = new 
+                { 
+                    UserId = userId,
+                    FirstName = firstName, 
+                    LastName = lastName, 
+                    Phone = phone,
+                    Gender = gender.ToString()
+                };
+            }
+            else
+            {
+                sql = @"UPDATE users 
                        SET first_name = @FirstName, 
                            last_name = @LastName, 
                            phone = @Phone
                        WHERE id = @UserId
                        RETURNING *";
+                
+                parameters = new 
+                { 
+                    UserId = userId,
+                    FirstName = firstName, 
+                    LastName = lastName, 
+                    Phone = phone 
+                };
+            }
             
-            var updatedUser = await connection.QuerySingleAsync<User>(sql, new 
-            { 
-                UserId = userId,
-                FirstName = firstName, 
-                LastName = lastName, 
-                Phone = phone 
-            });
+            var updatedUser = await connection.QuerySingleAsync<User>(sql, parameters);
             return updatedUser;
         }
 

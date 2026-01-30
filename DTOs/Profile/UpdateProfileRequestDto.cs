@@ -15,5 +15,7 @@ namespace HalaqatBackend.DTOs.Profile
         [Phone(ErrorMessage = "Invalid phone number format")]
         [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
         public string? Phone { get; set; }
+
+        public string? Gender { get; set; }
     }
 }

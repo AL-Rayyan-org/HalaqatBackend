@@ -1,5 +1,6 @@
 using BCrypt.Net;
 using HalaqatBackend.DTOs.Profile;
+using HalaqatBackend.Enums;
 using HalaqatBackend.Repositories.Profile;
 using HalaqatBackend.Repositories.RefreshTokens;
 using HalaqatBackend.Utils;
@@ -35,7 +36,8 @@ namespace HalaqatBackend.Services.Profile
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Phone = user.Phone,
-                Role = user.Role
+                Role = user.Role,
+                Gender = user.Gender
             };
         }
 
@@ -48,11 +50,23 @@ namespace HalaqatBackend.Services.Profile
                 throw new InvalidOperationException("User not found");
             }
 
+            Gender? genderEnum = null;
+            if (!string.IsNullOrWhiteSpace(request.Gender))
+            {
+                var normalizedGender = request.Gender.Trim().ToLower();
+                if (normalizedGender != "male" && normalizedGender != "female")
+                {
+                    throw new ArgumentException("Gender must be either 'Male' or 'Female'");
+                }
+                genderEnum = normalizedGender == "male" ? Gender.Male : Gender.Female;
+            }
+
             var updatedUser = await _profileRepository.UpdateUserProfileAsync(
                 userId,
                 request.FirstName,
                 request.LastName,
-                request.Phone);
+                request.Phone,
+                genderEnum);
 
             return new ProfileResponseDto
             {
@@ -61,7 +75,8 @@ namespace HalaqatBackend.Services.Profile
                 FirstName = updatedUser.FirstName,
                 LastName = updatedUser.LastName,
                 Phone = updatedUser.Phone,
-                Role = updatedUser.Role
+                Role = updatedUser.Role,
+                Gender = updatedUser.Gender
             };
         }
 

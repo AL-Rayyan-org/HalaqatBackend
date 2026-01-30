@@ -21,5 +21,8 @@ namespace HalaqatBackend.DTOs.Users
 
         [Required(ErrorMessage = "Role is required")]
         public string Role { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Gender is required")]
+        public string Gender { get; set; } = string.Empty;
     }
 }
