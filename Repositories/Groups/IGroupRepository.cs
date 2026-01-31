@@ -13,5 +13,8 @@ namespace HalaqatBackend.Repositories.Groups
         Task<Group?> GetDefaultGroupAsync();
         Task<IEnumerable<string>> GetTeacherGroupIdsAsync(string teacherId);
         Task<bool> IsTeacherInGroupAsync(string teacherId, string groupId);
+        Task<bool> UpdateStudentsGroupAsync(string oldGroupId, string newGroupId);
+        Task<bool> UpdateAttendanceGroupAsync(string oldGroupId, string newGroupId);
+        Task<bool> UpdateRecitationLogsGroupAsync(string oldGroupId, string newGroupId);
     }
 }
