@@ -10,6 +10,7 @@ namespace HalaqatBackend.DTOs.Groups{
         
         public string RecitationDays {get; set;}=string.Empty;
 
-        
+        public bool IsDefault { get; set; } = false;
+        public int MembersLimit { get; set; } = 10;
     }
 }
